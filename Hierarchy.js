@@ -196,24 +196,50 @@
   * @type {Matrix4}
   */
  var torsoMatrix = new Matrix4().setTranslate(0, 0, 0);
+
  /**  @type {Matrix4} */
- var shoulderMatrix = new Matrix4().setTranslate(6.5, 2, 0);
+ var shoulderRMatrix = new Matrix4().setTranslate(3, 3, 0);
+ var shoulderLMatrix = new Matrix4().setTranslate(-3, 3, 0);
+
  /**  @type {Matrix4} */
- var armMatrix = new Matrix4().setTranslate(0, -5, 0);
+ var armRMatrix = new Matrix4().setTranslate(0, -5, 0);
+ var armLMatrix = new Matrix4().setTranslate(0, -5, 0);
+
  /**  @type {Matrix4} */
- var handMatrix = new Matrix4().setTranslate(0, -4, 0);
+ var handRMatrix = new Matrix4().setTranslate( 0.5, -4, 0);
+ var handLMatrix = new Matrix4().setTranslate(-0.5, -4, 0);
+ 
  /**  @type {Matrix4} */
- var headMatrix = new Matrix4().setTranslate(0, 7, 0);
+ var headMatrix = new Matrix4().setTranslate(0, 9, 0);
+
+ /**  @type {Matrix4} */
+ var eyeRMatrix = new Matrix4().setTranslate( 1.75, 0, 1.6).rotate(-5,0,0,1);
+ var eyeLMatrix = new Matrix4().setTranslate(-1.75, 0, 1.6).rotate( 5,0,0,1);
+
+ /**  @type {Matrix4} */
+ var eyebrowRMatrix = new Matrix4().setTranslate(-1.75, 1.6, 1.6).rotate(0,0,0,1);
+ var eyebrowLMatrix = new Matrix4().setTranslate( 1.75, 1.6, 1.6).rotate(0,0,0,1);
+
  var torsoAngle = 0.0;
- var shoulderAngle = 0.0;
- var armAngle = 0.0;
- var handAngle = 0.0;
+
+ var shoulderRAngle = 0.0;
+ var shoulderLAngle = 0.0;
+
+ var armRAngle = 0.0;
+ var armLAngle = 0.0;
+
+ var handRAngle = 0.0;
+ var handLAngle = 0.0; 
+
  var headAngle = 0.0;
- var torsoMatrixLocal = new Matrix4().setScale(10, 10, 5);
- var shoulderMatrixLocal = new Matrix4().setScale(3, 5, 2);
- var armMatrixLocal = new Matrix4().setScale(3, 5, 2);
- var handMatrixLocal = new Matrix4().setScale(1, 3, 3);
- var headMatrixLocal = new Matrix4().setScale(4, 4, 4);
+
+ var torsoMatrixLocal     = new Matrix4().setScale(5, 12, 3);
+ var shoulderMatrixLocal  = new Matrix4().setScale(2, 5, 2);
+ var armMatrixLocal       = new Matrix4().setScale(2, 5, 2);
+ var handMatrixLocal      = new Matrix4().setScale(1, 3, 3);
+ var headMatrixLocal      = new Matrix4().setScale(7, 6, 4);
+ var eyeMatrixLocal       = new Matrix4().setScale(1, 2, 1); 
+ var eyebrowsMatrixLocal  = new Matrix4().setScale(1.5, 0.4, 1);
  /**
   * View matrix.
   * @type {Matrix4}
@@ -261,56 +287,107 @@
        torsoAngle -= 15;
        torsoMatrix.setTranslate(0, 0, 0).rotate(torsoAngle, 0, 1, 0);
        break;
+
      case "s":
-       shoulderAngle += 15;
+       shoulderRAngle += 15;
+       shoulderLAngle += 15;
+
        // rotate shoulder clockwise about a point 2 units above its center
-       var currentShoulderRot = new Matrix4()
+       var currentRShoulderRot = new Matrix4()
          .setTranslate(0, 2, 0)
-         .rotate(-shoulderAngle, 1, 0, 0)
+         .rotate(shoulderRAngle, 0, 0, 1)
          .translate(0, -2, 0);
-       shoulderMatrix.setTranslate(6.5, 2, 0).multiply(currentShoulderRot);
+       shoulderRMatrix.setTranslate( 3, 3, 0).multiply(currentRShoulderRot);
+
+       var currentLShoulderRot = new Matrix4()
+         .setTranslate(0, 2, 0)
+         .rotate(-shoulderLAngle, 0, 0, 1)
+         .translate(0, -2, 0);
+       shoulderLMatrix.setTranslate(-3, 3, 0).multiply(currentLShoulderRot);
        break;
+
      case "S":
-       shoulderAngle -= 15;
-       var currentShoulderRot = new Matrix4()
+       shoulderRAngle -= 15;
+       shoulderLAngle -= 15;
+
+       var currentRShoulderRot = new Matrix4()
          .setTranslate(0, 2, 0)
-         .rotate(-shoulderAngle, 1, 0, 0)
+         .rotate(-shoulderRAngle, 0, 0, -1)
          .translate(0, -2, 0);
-       shoulderMatrix.setTranslate(6.5, 2, 0).multiply(currentShoulderRot);
+       shoulderRMatrix.setTranslate(3, 3, 0).multiply(currentRShoulderRot);
+
+       var currentLShoulderRot = new Matrix4()
+         .setTranslate(0, 2, 0)
+         .rotate(shoulderLAngle, 0, 0, -1)
+         .translate(0, -2, 0);
+       shoulderLMatrix.setTranslate(-3, 3, 0).multiply(currentLShoulderRot);
        break;
+
      case "a":
-       armAngle += 15;
+       armRAngle += 15;
+       armLAngle += 15;
+
        // rotate arm clockwise about its top front corner
-       var currentArm = new Matrix4()
+       var currentRArm = new Matrix4()
          .setTranslate(0, 2.5, 1.0)
-         .rotate(-armAngle, 1, 0, 0)
+         .rotate(armRAngle, 0, 0, 1)
          .translate(0, -2.5, -1.0);
-       armMatrix.setTranslate(0, -5, 0).multiply(currentArm);
+       armRMatrix.setTranslate(0, -5, 0).multiply(currentRArm);
+
+       var currentLArm = new Matrix4()
+       .setTranslate(0, 2.5, 1.0)
+       .rotate(armLAngle, 0, 0, -1)
+       .translate(0, -2.5, -1.0);
+       armLMatrix.setTranslate(0, -5, 0).multiply(currentLArm);
        break;
+
      case "A":
-       armAngle -= 15;
-       var currentArm = new Matrix4()
+       armRAngle -= 15;
+       armLAngle -= 15;
+
+       var currentRArm = new Matrix4()
          .setTranslate(0, 2.5, 1.0)
-         .rotate(-armAngle, 1, 0, 0)
+         .rotate(-armRAngle, 0, 0, -1)
          .translate(0, -2.5, -1.0);
-       armMatrix.setTranslate(0, -5, 0).multiply(currentArm);
+       armRMatrix.setTranslate(0, -5, 0).multiply(currentRArm);
+
+       var currentLArm = new Matrix4()
+       .setTranslate(0, 2.5, 1.0)
+       .rotate(-armLAngle, 0, 0, 1)
+       .translate(0, -2.5, -1.0);
+       armLMatrix.setTranslate(0, -5, 0).multiply(currentLArm);
        break;
+       
      case "h":
-       handAngle += 15;
-       handMatrix.setTranslate(0, -4, 0).rotate(handAngle, 0, 1, 0);
+       handRAngle += 15;
+       handRMatrix.setTranslate( 0.5, -4, 0).rotate(handRAngle, 0, 1, 0);
+       handLMatrix.setTranslate(-0.5, -4, 0).rotate(-handRAngle, 0, 1, 0);
        break;
+
      case "H":
-       handAngle -= 15;
-       handMatrix.setTranslate(0, -4, 0).rotate(handAngle, 0, 1, 0);
+       handRAngle -= 15;
+       handRMatrix.setTranslate( 0.5, -4, 0).rotate(handRAngle, 0, 1, 0);
+       handLMatrix.setTranslate(-0.5, -4, 0).rotate(-handRAngle, 0, 1, 0);
        break;
      case "l":
        headAngle += 15;
-       headMatrix.setTranslate(0, 7, 0).rotate(headAngle, 0, 1, 0);
+       headMatrix.setTranslate(0, 9, 0).rotate(headAngle, 0, 1, 0);
        break;
      case "L":
        headAngle -= 15;
-       headMatrix.setTranslate(0, 7, 0).rotate(headAngle, 0, 1, 0);
+       headMatrix.setTranslate(0, 9, 0).rotate(headAngle, 0, 1, 0);
        break;
+
+     case "m": // Cara de mau
+       eyebrowRMatrix.setTranslate(-1.75, 1.0, 1.6).rotate(-5, 0, 0, 1);
+       eyebrowLMatrix.setTranslate( 1.75, 1.0, 1.6).rotate( 5, 0, 0, 1);
+       break;
+
+     case "M": // Cara default
+       eyebrowRMatrix.setTranslate(-1.75, 1.6, 1.6).rotate(0,0,0,1);
+       eyebrowLMatrix.setTranslate( 1.75, 1.6, 1.6).rotate(0,0,0,1);
+       break;
+
      default:
        return;
    }
@@ -352,7 +429,7 @@
    loc = gl.getUniformLocation(lightingShader, "projection");
    gl.uniformMatrix4fv(loc, false, projection.elements);
    loc = gl.getUniformLocation(lightingShader, "u_Color");
-   gl.uniform4f(loc, 0.0, 1.0, 0.0, 1.0);
+   gl.uniform4f(loc, 0.0, 0.0, 1.0, 1.0);
    var loc = gl.getUniformLocation(lightingShader, "lightPosition");
    gl.uniform4f(loc, 5.0, 10.0, 5.0, 1.0);
    var modelMatrixloc = gl.getUniformLocation(lightingShader, "model");
@@ -370,34 +447,115 @@
    gl.bindBuffer(gl.ARRAY_BUFFER, null);
    gl.useProgram(null);
  }
+
+ function renderCubeColor(matrixStack, matrixLocal, r, g, b, a) {
+  // bind the shader
+  gl.useProgram(lightingShader);
+  // get the index for the a_Position attribute defined in the vertex shader
+  var positionIndex = gl.getAttribLocation(lightingShader, "a_Position");
+  if (positionIndex < 0) {
+    console.log("Failed to get the storage location of a_Position");
+    return;
+  }
+  var normalIndex = gl.getAttribLocation(lightingShader, "a_Normal");
+  if (normalIndex < 0) {
+    console.log("Failed to get the storage location of a_Normal");
+    return;
+  }
+  // "enable" the a_position attribute
+  gl.enableVertexAttribArray(positionIndex);
+  gl.enableVertexAttribArray(normalIndex);
+  // bind data for points and normals
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+  gl.vertexAttribPointer(positionIndex, 3, gl.FLOAT, false, 0, 0);
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexNormalBuffer);
+  gl.vertexAttribPointer(normalIndex, 3, gl.FLOAT, false, 0, 0);
+  var loc = gl.getUniformLocation(lightingShader, "view");
+  gl.uniformMatrix4fv(loc, false, view.elements);
+  loc = gl.getUniformLocation(lightingShader, "projection");
+  gl.uniformMatrix4fv(loc, false, projection.elements);
+  loc = gl.getUniformLocation(lightingShader, "u_Color");
+  gl.uniform4f(loc, r, g, b, a);
+  var loc = gl.getUniformLocation(lightingShader, "lightPosition");
+  gl.uniform4f(loc, 5.0, 10.0, 5.0, 1.0);
+  var modelMatrixloc = gl.getUniformLocation(lightingShader, "model");
+  var normalMatrixLoc = gl.getUniformLocation(lightingShader, "normalMatrix");
+  // transform using current model matrix on top of stack
+  var current = new Matrix4(matrixStack.top()).multiply(matrixLocal);
+  gl.uniformMatrix4fv(modelMatrixloc, false, current.elements);
+  gl.uniformMatrix3fv(
+    normalMatrixLoc,
+    false,
+    makeNormalMatrixElements(current, view)
+  );
+  gl.drawArrays(gl.TRIANGLES, 0, 36);
+  // on safari 10, buffer cannot be disposed before drawing...
+  gl.bindBuffer(gl.ARRAY_BUFFER, null);
+  gl.useProgram(null);
+}
+
  /** Code to actually render our geometry. */
  function draw() {
-   // clear the framebuffer
-   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BIT);
-   // set up the matrix stack
-   var s = new Stack();
-   s.push(torsoMatrix);
-   renderCube(s, torsoMatrixLocal);
-   // shoulder relative to torso
-   s.push(new Matrix4(s.top()).multiply(shoulderMatrix));
-   renderCube(s, shoulderMatrixLocal);
-   // arm relative to shoulder
-   s.push(new Matrix4(s.top()).multiply(armMatrix));
-   renderCube(s, armMatrixLocal);
-   // hand relative to arm
-   s.push(new Matrix4(s.top()).multiply(handMatrix));
-   renderCube(s, handMatrixLocal);
-   s.pop();
-   s.pop();
-   s.pop();
-   // head relative to torso
-   s.push(new Matrix4(s.top()).multiply(headMatrix));
-   renderCube(s, headMatrixLocal);
-   s.pop();
-   s.pop();
-   if (!s.isEmpty()) {
-     console.log("Warning: pops do not match pushes");
-   }
+    // clear the framebuffer
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BIT);
+    // set up the matrix stack
+    var s = new Stack();
+    s.push(torsoMatrix);
+    renderCube(s, torsoMatrixLocal);
+
+    // right shoulder relative to torso
+    s.push(new Matrix4(s.top()).multiply(shoulderRMatrix));
+    renderCube(s, shoulderMatrixLocal);
+    // right arm relative to shoulder
+    s.push(new Matrix4(s.top()).multiply(armRMatrix));
+    renderCube(s, armMatrixLocal);
+    // right hand relative to arm
+    s.push(new Matrix4(s.top()).multiply(handRMatrix));
+    renderCubeColor(s, handMatrixLocal, 0.0, 0.0, 0.75, 1.0);
+    s.pop();
+    s.pop();
+    s.pop();
+
+    // left shoulder relative to torso
+    s.push(new Matrix4(s.top()).multiply(shoulderLMatrix));
+    renderCube(s, shoulderMatrixLocal);
+    // left arm relative to shoulder
+    s.push(new Matrix4(s.top()).multiply(armLMatrix));
+    renderCube(s, armMatrixLocal);
+    // left hand relative to arm
+    s.push(new Matrix4(s.top()).multiply(handLMatrix));
+    renderCubeColor(s, handMatrixLocal, 0.0, 0.0, 0.75, 1.0);
+    s.pop();
+    s.pop();
+    s.pop();
+
+    // head relative to torso
+    s.push(new Matrix4(s.top()).multiply(headMatrix));
+    renderCubeColor(s, headMatrixLocal, 0.0, 0.0, 0.75, 1.0);
+
+    // eyes right - relativo to torso
+    s.push(new Matrix4(s.top()).multiply(eyeRMatrix));
+    renderCubeColor(s, eyeMatrixLocal, 0.0, 0.0, 0.0, 1.0);
+    s.pop();
+    // eyes left  - relativo to torso
+    s.push(new Matrix4(s.top()).multiply(eyeLMatrix));
+    renderCubeColor(s, eyeMatrixLocal, 0.0, 0.0, 0.0, 1.0);
+    s.pop();
+
+    // eyebrows right - relativo to torso
+    s.push(new Matrix4(s.top()).multiply(eyebrowRMatrix));
+    renderCubeColor(s, eyebrowsMatrixLocal, 0.1, 0.1, 0.1, 1.0);
+    s.pop(); 
+    // eyebrows left  - relativo to torso
+    s.push(new Matrix4(s.top()).multiply(eyebrowLMatrix));
+    renderCubeColor(s, eyebrowsMatrixLocal, 0.1, 0.1, 0.1, 1.0);
+    s.pop(); 
+
+    s.pop();
+    s.pop();
+    if (!s.isEmpty()) {
+      console.log("Warning: pops do not match pushes");
+    }
  }
  /**
   * <p>Entry point when page is loaded.</p>
