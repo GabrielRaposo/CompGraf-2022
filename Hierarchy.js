@@ -220,6 +220,14 @@
  var eyebrowRMatrix = new Matrix4().setTranslate(-1.75, 1.6, 1.6).rotate(0,0,0,1);
  var eyebrowLMatrix = new Matrix4().setTranslate( 1.75, 1.6, 1.6).rotate(0,0,0,1);
 
+ /**  @type {Matrix4} */
+ var tightRMatrix = new Matrix4().setTranslate( 1.75, -8.5, 0);
+ var tightLMatrix = new Matrix4().setTranslate(-1.75, -8.5, 0); 
+
+  /**  @type {Matrix4} */
+ var calfRMatrix = new Matrix4().setTranslate(0, -5, 0); 
+ var calfLMatrix = new Matrix4().setTranslate(0, -5, 0); 
+
  var torsoAngle = 0.0;
 
  var shoulderRAngle = 0.0;
@@ -233,6 +241,12 @@
 
  var headAngle = 0.0;
 
+ var tightRAngle = 0.0;
+ var tightLAngle = 0.0;
+
+ var calfRAngle = 0.0;
+ var calfLAngle = 0.0;
+
  var torsoMatrixLocal     = new Matrix4().setScale(5, 12, 3);
  var shoulderMatrixLocal  = new Matrix4().setScale(2, 5, 2);
  var armMatrixLocal       = new Matrix4().setScale(2, 5, 2);
@@ -240,6 +254,8 @@
  var headMatrixLocal      = new Matrix4().setScale(7, 6, 4);
  var eyeMatrixLocal       = new Matrix4().setScale(1, 2, 1); 
  var eyebrowsMatrixLocal  = new Matrix4().setScale(1.5, 0.4, 1);
+ var tightMatrixLocal     = new Matrix4().setScale(1, 5, 1); 
+ var calfMatrixLocal      = new Matrix4().setScale(1, 5, 1); 
  /**
   * View matrix.
   * @type {Matrix4}
@@ -388,6 +404,74 @@
        eyebrowLMatrix.setTranslate( 1.75, 1.6, 1.6).rotate(0,0,0,1);
        break;
 
+     case "y": // Coxas - Vai
+       tightRAngle += 15;
+       tightLAngle += 15;
+
+       var currentRtight = new Matrix4()
+       .setTranslate(0, 2.5, 0.0)
+       .rotate (tightRAngle, -1, 0, 0)
+       .translate(0, -2.5, 0.0);
+       tightRMatrix.setTranslate( 1.75, -8.5, 0).multiply(currentRtight);
+
+       var currentLtight = new Matrix4()
+       .setTranslate(0, 2.5, 0.0)
+       .rotate (tightLAngle, -1, 0, 0)
+       .translate(0, -2.5, 0.0);
+       tightLMatrix.setTranslate(-1.75, -8.5, 0).multiply(currentLtight);
+       break;
+
+    case "Y": // Coxas - Volta
+       tightRAngle -= 15;
+       tightLAngle -= 15;
+
+       var currentRtight = new Matrix4()
+       .setTranslate(0, 2.5, 0.0)
+       .rotate (tightRAngle, -1, 0, 0)
+       .translate(0, -2.5, 0.0);
+       tightRMatrix.setTranslate( 1.75, -8.5, 0).multiply(currentRtight);
+
+       var currentLtight = new Matrix4()
+       .setTranslate(0, 2.5, 0.0)
+       .rotate (tightLAngle, -1, 0, 0)
+       .translate(0, -2.5, 0.0);
+       tightLMatrix.setTranslate(-1.75, -8.5, 0).multiply(currentLtight);
+       break;
+
+    case "u": // Panturrilhas - Vai
+       calfRAngle -= 15;
+       calfLAngle -= 15;
+
+       var currentRcalf = new Matrix4()
+       .setTranslate(0, 2.5, 0.0)
+       .rotate (calfRAngle, -1, 0, 0)
+       .translate(0, -2.5, 0.0);
+       calfRMatrix.setTranslate(0, -5, 0).multiply(currentRcalf);
+
+       var currentLcalf = new Matrix4()
+       .setTranslate(0, 2.5, 0.0)
+       .rotate (calfLAngle, -1, 0, 0)
+       .translate(0, -2.5, 0.0);
+       calfLMatrix.setTranslate(0, -5, 0).multiply(currentLcalf);
+       break;
+       
+    case "U": // Panturrilhas - Volta
+       calfRAngle += 15;
+       calfLAngle += 15;
+
+       var currentRcalf = new Matrix4()
+       .setTranslate(0, 2.5, 0.0)
+       .rotate (calfRAngle, -1, 0, 0)
+       .translate(0, -2.5, 0.0);
+       calfRMatrix.setTranslate(0, -5, 0).multiply(currentRcalf);
+
+       var currentLcalf = new Matrix4()
+       .setTranslate(0, 2.5, 0.0)
+       .rotate (calfLAngle, -1, 0, 0)
+       .translate(0, -2.5, 0.0);
+       calfLMatrix.setTranslate(0, -5, 0).multiply(currentLcalf);
+       break;
+
      default:
        return;
    }
@@ -503,55 +587,78 @@
     s.push(torsoMatrix);
     renderCube(s, torsoMatrixLocal);
 
-    // right shoulder relative to torso
-    s.push(new Matrix4(s.top()).multiply(shoulderRMatrix));
-    renderCube(s, shoulderMatrixLocal);
-    // right arm relative to shoulder
-    s.push(new Matrix4(s.top()).multiply(armRMatrix));
-    renderCube(s, armMatrixLocal);
-    // right hand relative to arm
-    s.push(new Matrix4(s.top()).multiply(handRMatrix));
-    renderCubeColor(s, handMatrixLocal, 0.0, 0.0, 0.75, 1.0);
-    s.pop();
-    s.pop();
-    s.pop();
+      // right shoulder relative to torso
+      s.push(new Matrix4(s.top()).multiply(shoulderRMatrix));
+      renderCube(s, shoulderMatrixLocal);
+        // right arm relative to shoulder
+        s.push(new Matrix4(s.top()).multiply(armRMatrix));
+        renderCube(s, armMatrixLocal);
+          // right hand relative to arm
+          s.push(new Matrix4(s.top()).multiply(handRMatrix));
+          renderCubeColor(s, handMatrixLocal, 0.6, 0.0, 0.6, 1.0);
+          s.pop();
+        s.pop();
+      s.pop();
 
-    // left shoulder relative to torso
-    s.push(new Matrix4(s.top()).multiply(shoulderLMatrix));
-    renderCube(s, shoulderMatrixLocal);
-    // left arm relative to shoulder
-    s.push(new Matrix4(s.top()).multiply(armLMatrix));
-    renderCube(s, armMatrixLocal);
-    // left hand relative to arm
-    s.push(new Matrix4(s.top()).multiply(handLMatrix));
-    renderCubeColor(s, handMatrixLocal, 0.0, 0.0, 0.75, 1.0);
-    s.pop();
-    s.pop();
-    s.pop();
+      // left shoulder relative to torso
+      s.push(new Matrix4(s.top()).multiply(shoulderLMatrix));
+      renderCube(s, shoulderMatrixLocal);
+        // left arm relative to shoulder
+        s.push(new Matrix4(s.top()).multiply(armLMatrix));
+        renderCube(s, armMatrixLocal);
+          // left hand relative to arm
+          s.push(new Matrix4(s.top()).multiply(handLMatrix));
+          renderCubeColor(s, handMatrixLocal, 0.6, 0.0, 0.6, 1.0);
+          s.pop();
+        s.pop();
+      s.pop();
 
-    // head relative to torso
-    s.push(new Matrix4(s.top()).multiply(headMatrix));
-    renderCubeColor(s, headMatrixLocal, 0.0, 0.0, 0.75, 1.0);
+      // head relative to torso
+      s.push(new Matrix4(s.top()).multiply(headMatrix));
+      renderCubeColor(s, headMatrixLocal, 0.6, 0.0, 0.6, 1.0);
 
-    // eyes right - relativo to torso
-    s.push(new Matrix4(s.top()).multiply(eyeRMatrix));
-    renderCubeColor(s, eyeMatrixLocal, 0.0, 0.0, 0.0, 1.0);
-    s.pop();
-    // eyes left  - relativo to torso
-    s.push(new Matrix4(s.top()).multiply(eyeLMatrix));
-    renderCubeColor(s, eyeMatrixLocal, 0.0, 0.0, 0.0, 1.0);
-    s.pop();
+        // eyes right - relativo to head
+        s.push(new Matrix4(s.top()).multiply(eyeRMatrix));
+        renderCubeColor(s, eyeMatrixLocal, 0.0, 0.0, 0.0, 1.0);
+        s.pop();
+        // eyes left  - relativo to head
+        s.push(new Matrix4(s.top()).multiply(eyeLMatrix));
+        renderCubeColor(s, eyeMatrixLocal, 0.0, 0.0, 0.0, 1.0);
+        s.pop();
 
-    // eyebrows right - relativo to torso
-    s.push(new Matrix4(s.top()).multiply(eyebrowRMatrix));
-    renderCubeColor(s, eyebrowsMatrixLocal, 0.1, 0.1, 0.1, 1.0);
-    s.pop(); 
-    // eyebrows left  - relativo to torso
-    s.push(new Matrix4(s.top()).multiply(eyebrowLMatrix));
-    renderCubeColor(s, eyebrowsMatrixLocal, 0.1, 0.1, 0.1, 1.0);
-    s.pop(); 
+        // eyebrow right - relativo to head
+        s.push(new Matrix4(s.top()).multiply(eyebrowRMatrix));
+        renderCubeColor(s, eyebrowsMatrixLocal, 0.1, 0.1, 0.1, 1.0);
+        s.pop(); 
+        // eyebrow left  - relativo to head
+        s.push(new Matrix4(s.top()).multiply(eyebrowLMatrix));
+        renderCubeColor(s, eyebrowsMatrixLocal, 0.1, 0.1, 0.1, 1.0);
+        s.pop(); 
 
-    s.pop();
+      s.pop();
+
+      // tights relative to torso
+      s.push(new Matrix4(s.top()).multiply(tightRMatrix));
+      renderCube(s, tightMatrixLocal);
+
+        // calves relative to tights
+        s.push(new Matrix4(s.top()).multiply(calfRMatrix));
+        renderCube(s, calfMatrixLocal);
+        s.pop();
+
+      s.pop();
+
+      // tights relative to torso
+      s.push(new Matrix4(s.top()).multiply(tightLMatrix));
+      renderCube(s, tightMatrixLocal);
+
+        // calves relative to tights
+        s.push(new Matrix4(s.top()).multiply(calfLMatrix));
+        renderCube(s, calfMatrixLocal);
+        s.pop();
+
+      s.pop();
+
     s.pop();
     if (!s.isEmpty()) {
       console.log("Warning: pops do not match pushes");
