@@ -1,3 +1,31 @@
+var VSHADER_SOURCE = 
+  'uniform mat4 model;\n' +
+  'uniform mat4 view;\n' +
+  'uniform mat4 projection;\n' +
+  'uniform vec4 u_Color;\n' +
+  'uniform mat3 normalMatrix;\n' +
+  'uniform vec4 lightPosition;\n' +
+  'attribute vec4 a_Position;\n' +
+  'attribute vec3 a_Normal;\n' +
+  'varying vec4 color;\n' +
+  'void main() {\n' +
+    'float ambientFactor = 0.3;\n' +
+    'vec3 lightDirection = normalize((view * lightPosition - view * model * a_Position).xyz);\n' +
+    '//vec3 normal = (view * model * vec4(a_Normal, 0.0)).xyz;\n' +
+    'vec3 normal = normalize(normalMatrix * a_Normal);\n' +
+    'float diffuseFactor = max(0.0, dot(lightDirection, normal));\n' +
+    'color = u_Color * diffuseFactor + u_Color * ambientFactor;\n' +
+    'color.a = 1.0;\n' +
+    'gl_Position = projection * view * model * a_Position;\n' +
+  '}\n';
+
+var FSHADER_SOURCE = 
+  'precision mediump float;\n' +
+  'varying vec4 color;\n' +
+  'void main() {\n' +
+    'gl_FragColor = color;\n' +
+    '}\n';
+
 /**
  * @file
  *
@@ -719,19 +747,15 @@
      console.log("Failed to get the rendering context for WebGL");
      return;
    }
-   // load and compile the shader pair, using utility from the teal book
-   var vshaderSource = document.getElementById(
-     "vertexLightingShader"
-   ).textContent;
-   var fshaderSource = document.getElementById(
-     "fragmentLightingShader"
-   ).textContent;
-   if (!initShaders(gl, vshaderSource, fshaderSource)) {
-     console.log("Failed to intialize shaders.");
-     return;
-   }
-   lightingShader = gl.program;
-   gl.useProgram(null);
+
+  // load and compile the shader pair, using utility from the teal book
+  if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
+    console.log("Failed to intialize shaders.");
+    return;
+  }
+  lightingShader = gl.program;
+  gl.useProgram(null);
+
    // buffer for vertex positions for triangles
    vertexBuffer = gl.createBuffer();
    if (!vertexBuffer) {
