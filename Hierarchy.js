@@ -191,6 +191,7 @@
   * @type {WebGLProgram}
   */
  var lightingShader;
+
  /**
   * Transformation matrix that is the root of 5 objects in the scene.
   * @type {Matrix4}
@@ -256,6 +257,7 @@
  var eyebrowsMatrixLocal  = new Matrix4().setScale(1.5, 0.4, 1);
  var tightMatrixLocal     = new Matrix4().setScale(1, 5, 1); 
  var calfMatrixLocal      = new Matrix4().setScale(1, 5, 1); 
+
  /**
   * View matrix.
   * @type {Matrix4}
@@ -265,12 +267,14 @@
          20, 20, 20,   // eye
          0, 0, 0,      // at - looking at the origin
          0, 1, 0); // up vector - y axis
+
  /**
   * <p>Projection matrix.</p>
   * Here use aspect ratio 3/2 corresponding to canvas size 600 x 400.
   * @type {Matrix4}
   */
- var projection = new Matrix4().setPerspective(45, 1.5, 0.1, 1000);
+ var projection = new Matrix4().setPerspective(60, 1.5, 0.1, 1000);
+
  /**
   * Translate keypress events to strings.
   * @param {KeyboardEvent} event key pressed.
@@ -286,6 +290,7 @@
      return null; // special key
    }
  }
+
  /**
   * <p>Handler for key press events.</p>
   * Adjusts object rotations.
@@ -479,6 +484,33 @@
      gl.SHADING_LANGUAGE_VERSION
    )}<br>${gl.getParameter(gl.VERSION)}`;
  }
+
+ var mouseIsPressed = false;
+ var cvs = document.querySelector('canvas');
+ 
+ window.addEventListener("mousedown", (event) => {
+     mouseIsPressed = true;
+ });
+ 
+ window.addEventListener("mouseup", (event) => {
+     mouseIsPressed = false;
+ });
+ 
+ var current_X = 0;
+ var current_Y = 0;
+ cvs.addEventListener("mousemove", (event) => {
+   event = event || window.event;
+   if(mouseIsPressed) {
+     if(current_X < event.clientX) torsoAngle_X += event.clientX / 100;
+     if(current_X > event.clientX) torsoAngle_X -= event.clientX / 100;
+     if(current_Y < event.clientY) torsoAngle_Y -= event.clientY / 100;
+     if(current_Y > event.clientY) torsoAngle_Y += event.clientY / 100;
+     torsoMatrix.setTranslate(0, 0, 0).rotate(torsoAngle_X + torsoAngle, 0, 1, 0).rotate(torsoAngle_Y, 1, 0, 0);
+     current_X = event.clientX;
+     current_Y = event.clientY;
+   }
+ });
+
  /**
   * <p>Helper function.</p>
   * Renders the cube based on the model transformation
@@ -576,7 +608,7 @@
   // on safari 10, buffer cannot be disposed before drawing...
   gl.bindBuffer(gl.ARRAY_BUFFER, null);
   gl.useProgram(null);
-}
+ }
 
  /** Code to actually render our geometry. */
  function draw() {
@@ -664,6 +696,7 @@
       console.log("Warning: pops do not match pushes");
     }
  }
+
  /**
   * <p>Entry point when page is loaded.</p>
   *
@@ -678,7 +711,7 @@
   */
  window.addEventListener("load", (event) => {
    // retrieve <canvas> element
-   var canvas = document.getElementById("theCanvas");
+   let canvas = document.getElementById("theCanvas");
    // key handler
    window.onkeypress = handleKeyPress;
    gl = canvas.getContext("webgl2");
@@ -723,8 +756,8 @@
    // define an animation loop
    var animate = function () {
      draw();
-     requestAnimationFrame(animate);
-   };
-   // start drawing!
+     requestAnimationFrame(animate, canvas);
+    };
+  
    animate();
  });
