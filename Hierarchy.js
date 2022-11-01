@@ -276,6 +276,9 @@ var FSHADER_SOURCE =
  var calfRAngle = 0.0;
  var calfLAngle = 0.0;
 
+ var torsoAngle_X = 0.0;
+ var torsoAngle_Y = 0.0;
+
  var torsoMatrixLocal     = new Matrix4().setScale(5, 12, 3);
  var shoulderMatrixLocal  = new Matrix4().setScale(2, 5, 2);
  var armMatrixLocal       = new Matrix4().setScale(2, 5, 2);
@@ -330,11 +333,13 @@ var FSHADER_SOURCE =
    switch (ch) {
      case "t":
        torsoAngle += 15;
-       torsoMatrix.setTranslate(0, 0, 0).rotate(torsoAngle, 0, 1, 0);
+      //  torsoMatrix.setTranslate(0, 0, 0).rotate(torsoAngle, 0, 1, 0);
+       torsoMatrix.setTranslate(0, 0, 0).rotate(torsoAngle_X + torsoAngle, 0, 1, 0);
        break;
      case "T":
        torsoAngle -= 15;
-       torsoMatrix.setTranslate(0, 0, 0).rotate(torsoAngle, 0, 1, 0);
+      //  torsoMatrix.setTranslate(0, 0, 0).rotate(torsoAngle, 0, 1, 0);
+       torsoMatrix.setTranslate(0, 0, 0).rotate(torsoAngle_X + torsoAngle, 0, 1, 0);
        break;
 
      case "s":
