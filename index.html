@@ -1,0 +1,78 @@
+
+<!--  Hierarchical transformation demo.
+Vertex shader does basic Lambert shading. -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Hierarchy</title>
+    </head>
+
+    <body>
+        <canvas id="theCanvas" width="600" height="400">
+            Please use a browser that supports "canvas"
+        </canvas>
+
+
+        <p>Poses:</p>
+
+        <ul style="list-style: none">
+            <li>Caindo sem paraquedas: Y, u, h(x4), s(x7), a</li>
+            <li>Assaltado num ônibus: y(x7), u(x6), s(x8), a(x4), h(x7)</li>
+            <li>Desapontado com você: s(x3), A(x5), h(x3), l(x3), m</li>
+            <li>Obs.: trackball ainda está com alguns problemas</li>
+            <!-- <li id="options"></li> -->
+        </ul>
+
+        <p>Keyboard controls:</p>
+
+        <ul style="list-style: none">
+            <li>t, T - torso rotation</li>
+            <li>s, S - shoulder rotation</li>
+            <li>a, A - arm rotation</li>
+            <li>h, H - hand rotation</li>
+            <li>l, L - head rotation</li>
+            <li> --- </li>
+            <li>m, M - face expression</li>
+            <li>y, Y - tights rotation</li>
+            <li>u, U - calves rotation</li>
+            <li id="options"></li>
+        </ul>
+
+        <script src="./js/webgl-utils.js"></script>
+        <script src="./js/webgl-debug.js"></script>
+        <script src="cuon-utils.js"></script>
+        <script src="cuon-matrix.js"></script>
+        <script src="./js/simple-rotator.js"></script>
+        <script src="Hierarchy.js"></script>
+        
+        <!-- <script src="js/three.js"></script>
+        <script>
+			const scene = new THREE.Scene();
+			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+			const renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+			const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+			const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+			const cube = new THREE.Mesh( geometry, material );
+			scene.add( cube );
+
+			camera.position.z = 5;
+
+			function animate() {
+				requestAnimationFrame( animate );
+
+				cube.rotation.x += 0.01;
+				cube.rotation.y += 0.01;
+
+				renderer.render( scene, camera );
+			};
+
+			animate();
+		</script> -->
+    </body>
+</html>
